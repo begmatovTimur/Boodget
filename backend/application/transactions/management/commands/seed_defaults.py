@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand
-from models_files.income_source_model import IncomeSource
-from models_files.expense_category_model import ExpenseCategory
+
+from transactions.models_files.income_source_model import IncomeSource
+from transactions.models_files.expense_category_model import ExpenseCategory
+
 
 class Command(BaseCommand):
     help = "Seed default income sources and expense categories"
