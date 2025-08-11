@@ -6,6 +6,9 @@ import Link from "next/link";
 import {Eye, EyeOff} from 'lucide-react';
 
 import {apiRequest} from "@/app/lib/api";
+import {toast} from "react-toastify";
+
+const status = "userMeta"
 
 
 const Page = () => {
@@ -17,7 +20,7 @@ const Page = () => {
 
 
     const LoginUser = async () => {
-        try {
+        if (username && password) {
             const userObject = {
                 username,
                 password,
@@ -25,10 +28,16 @@ const Page = () => {
             await apiRequest("auth/token/", "POST", userObject).then(response => {
                 localStorage.setItem("access", response.access);
                 localStorage.setItem("refresh", response.refresh);
-            })
-            await router.push("/")
-        } catch (error) {
-            console.log(error);
+                localStorage.setItem("status", status);
+                window.dispatchEvent(new Event("statusChanged"));
+                router.push("/")
+                toast.success("Successfully logged in");
+            }).catch(e => {
+                    toast.error("Incorrect login details provided.");
+                }
+            )
+        } else {
+            toast.error("Username and Password must be filled in.");
         }
     }
 
@@ -68,7 +77,7 @@ const Page = () => {
 
                 <button
                     type="submit"
-                    className="w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-md transition"
+                    className="w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-md transition cursor-pointer"
                     onClick={() => LoginUser()}
                 >
                     Login

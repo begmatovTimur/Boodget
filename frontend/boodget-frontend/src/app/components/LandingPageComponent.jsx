@@ -8,34 +8,48 @@ import WelcomePageComponent from "@/app/components/WelcomePageComponent";
 import LoaderComponent from "@/app/components/LoaderComponent";
 import ReportDashboardComponent from "@/app/components/ReportDashboardComponent";
 
+const STATUS = "userMeta"
+
 
 const LandingPageComponent = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [hasCheckedAuth, setHasCheckedAuth] = useState(false); // <-- NEW
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        apiRequest("transactions/dash-report/?range=month", "GET")
-            .then(response => {
-                console.log(response);
-                setIsLoggedIn(true);
-            }).catch(error => {
-            if (error?.response?.status === 401) {
-                // token invalid or expired
-                console.log("Token expired or invalid");
-                setIsLoggedIn(false);
-                // show welcome page or redirect
-            }
-        });
-    }, [])
+        setIsLoggedIn(localStorage.getItem("status") === STATUS)
+        const isSessionInvalid = localStorage.getItem("status") !== STATUS
+            || !localStorage.getItem('access')
+            || !localStorage.getItem('refresh')
+        if (isSessionInvalid) {
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            setIsLoggedIn(false)
+            setIsLoading(true);
+        } else {
+            setIsLoggedIn(true)
+        }
 
-    // if (isLoggedIn === false) return <LoaderComponent/>
+        setHasCheckedAuth(true);
+
+        const handleChange = () => {
+            setIsLoggedIn(localStorage.getItem("status") === STATUS);
+        };
+
+        window.addEventListener("statusChanged", handleChange);
+
+        return () => window.removeEventListener("statusChanged", handleChange);
+    }, []);
+
+
+    if (!hasCheckedAuth) return <LoaderComponent/>;
 
     return (
         <div className="min-h-screen bg-white">
-            <Navbar/>
-
             {
-                isLoggedIn ? <ReportDashboardComponent/> :
-                    <WelcomePageComponent/>
+                isLoggedIn
+                    ? <ReportDashboardComponent/>
+                    : <WelcomePageComponent/>
             }
 
         </div>

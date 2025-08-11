@@ -38,8 +38,14 @@ export const apiRequest = async (endpoint, method = 'GET', body = null, token = 
         }
     }
 
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'Request failed');
+    let data = null;
+    const contentType = response.headers.get('content-type');
+
+    if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+    }
+
+    if (!response.ok) throw new Error(data?.message || "API error");
 
     return data;
 };

@@ -12,6 +12,7 @@ const FINANCE_COLORS = {
     income: "#00c49f",
     expense: "#ff8042",
 };
+const STATUS = "userMeta"
 
 export default function ReportDashboardComponent() {
     const [range, setRange] = useState("month");
@@ -25,8 +26,20 @@ export default function ReportDashboardComponent() {
     const {router} = useRouter();
 
     useEffect(() => {
+        setIsLoading(true)
+        if (!range || !selectedType) return;
+
         apiRequest(`transactions/dash-report/?range=${range}`, "GET")
             .then((response) => {
+                const isSessionInvalid = localStorage.getItem("status") !== STATUS
+                    || !localStorage.getItem('access')
+                    || !localStorage.getItem('refresh')
+                if (isSessionInvalid) {
+                    localStorage.removeItem("access");
+                    localStorage.removeItem("refresh");
+                    window.dispatchEvent(new Event("statusChanged"));
+                    return;
+                }
                 setIsLoading(false)
                 const data = response;
                 let totalIncomeData = 0
@@ -36,14 +49,16 @@ export default function ReportDashboardComponent() {
                 let expenseChartData = []
 
                 data.incomes.forEach((item, index) => {
-                    totalIncomeData += parseFloat(item.amount);
-                    incomeChartData.push({"name": item.source.name, "uv": item.amount});
+                    totalIncomeData += parseFloat(item?.amount);
+                    incomeChartData.push({"name": item?.source?.name, "uv": item?.amount});
                 });
                 data.expenses.forEach((item, index) => {
-                    totalExpenseData += parseFloat(item.amount);
-                    expenseChartData.push({"name": item.category.name, "uv": item.amount});
+                    console.log(item)
+                    totalExpenseData += parseFloat(item?.amount);
+                    expenseChartData.push({"name": item?.category_details?.name, "uv": item?.amount});
                 });
                 console.log(incomeChartData);
+                console.log(expenseChartData);
                 console.log(selectedType);
 
                 if (selectedType === "income") {
@@ -64,22 +79,15 @@ export default function ReportDashboardComponent() {
                 setTotalExpense(totalExpenseData)
             })
             .catch((error) => {
-                if (error?.response?.status === 401) {
-                    console.log("Token expired or invalid");
-                    // maybe show welcome screen or force logout?
-                } else {
-                    console.error("Failed to fetch dashboard data:", error);
-                }
+                localStorage.removeItem("access");
+                localStorage.removeItem("refresh");
+                localStorage.setItem("status", "authFail");
+                window.dispatchEvent(new Event("statusChanged"));
 
                 setPieData([]);
                 setBarData([]);
             });
     }, [range, selectedType]);
-
-    useEffect(() => {
-        setIsLoading(true);
-    }, [])
-
 
     const formatDateRange = () => {
         const today = new Date();
@@ -92,7 +100,6 @@ export default function ReportDashboardComponent() {
         return today.toLocaleString("en-US", {month: "long"});
     };
 
-    if (isLoading === true) return <LoaderComponent/>
 
     return (
         <div className="p-6 bg-[#0d0d0d] min-h-screen text-white">
@@ -102,7 +109,7 @@ export default function ReportDashboardComponent() {
                         key={opt}
                         onClick={() => setRange(opt)}
                         className={cn(
-                            "px-4 py-2 rounded-full border",
+                            "px-4 py-2 rounded-full border cursor-pointer",
                             range === opt ? "bg-[#FFD700] text-black" : "border-gray-600"
                         )}
                     >
@@ -118,7 +125,6 @@ export default function ReportDashboardComponent() {
                     ${totalIncome - totalExpense}
                 </span>
             </h1>
-
 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
@@ -139,14 +145,14 @@ export default function ReportDashboardComponent() {
                                     return (
                                         <Cell
                                             key={`cell-${index}`}
-                                            fill={isSelected?COLORS[index]: '#d1d5db'}
+                                            fill={isSelected ? COLORS[index] : '#d1d5db'}
                                             strokeWidth={isSelected ? 2 : 1}
                                             outerRadius={isSelected ? 90 : 80} // small pop effect
                                         />
                                     );
                                 })}
                             </Pie>
-                            <Tooltip />
+                            <Tooltip/>
                         </PieChart>
                     </ResponsiveContainer>
 
