@@ -38,7 +38,7 @@ def adjust_account_on_income_update(sender, instance, **kwargs):
     if instance.pk:
         old = Income.objects.get(pk=instance.pk)
         diff = instance.amount - old.amount
-        instance.account.amount += diff
+        instance.account.balance += diff  # ✅ FIXED
         instance.account.save()
 
 @receiver(pre_save, sender=Expense)
@@ -46,5 +46,5 @@ def adjust_account_on_expense_update(sender, instance, **kwargs):
     if instance.pk:
         old = Expense.objects.get(pk=instance.pk)
         diff = instance.amount - old.amount
-        instance.account.amount -= diff
+        instance.account.balance -= diff  # ✅ FIXED
         instance.account.save()

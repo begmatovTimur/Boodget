@@ -10,9 +10,14 @@ class RegisterUser(generics.CreateAPIView):
     serializer_class = UserWriteSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        queryset = User.objects.filter(username=request.data['username'])
+        print(queryset)
+        if not queryset.exists():
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+        else:
+            return Response({'message': 'USER_EXISTS'}, status = status.HTTP_400_BAD_REQUEST)
 
         tokens = UserWriteSerializer.get_tokens(user)
         print(tokens)

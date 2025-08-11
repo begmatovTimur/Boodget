@@ -9,9 +9,14 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ExpenseSerializer(serializers.ModelSerializer):
-    created_at = serializers.DateField(format="%Y-%m-%d")
-    category = ExpenseCategorySerializer(read_only=True)
+    created_at = serializers.DateField(format="%Y-%m-%d", read_only=True)
+    category = serializers.PrimaryKeyRelatedField(queryset=ExpenseCategory.objects.all())
+    category_details = ExpenseCategorySerializer(source='category', read_only=True)
+    account = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Expense
-        fields = '__all__'
+        fields = [
+            'id', 'amount', 'note', 'created_at', 'updated_at',
+            'category', 'category_details', 'account', 'is_active'
+        ]
