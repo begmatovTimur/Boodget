@@ -2,7 +2,7 @@ from django.urls import path
 
 from transactions.views import TransactionsReport, CurrentUserData, UserIncomeTransactions, UserExpenseTransactions, \
     UserIncomeFilterTransactions, UserExpenseFilterTransactions, IncomeSourceListView, \
-    ExpenseCategoryListView, UserTransactionsBreakdown
+    ExpenseCategoryListView, UserTransactionsBreakdown, UserIncomeTransactionTrends, UserExpenseTransactionTrends
 
 urlpatterns = [
     path('dash-report/', TransactionsReport.as_view()),
@@ -16,4 +16,6 @@ urlpatterns = [
     path('income-sources/', IncomeSourceListView.as_view()),
     path('expense-categories/', ExpenseCategoryListView.as_view()),
     path('breakdown/', UserTransactionsBreakdown.as_view()),
+    path('trends/incomes', UserIncomeTransactionTrends.as_view()),
+    path('trends/expenses', UserExpenseTransactionTrends.as_view())
 ]
