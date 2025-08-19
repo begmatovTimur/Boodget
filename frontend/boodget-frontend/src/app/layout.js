@@ -10,7 +10,7 @@ export default function RootLayout({children}) {
     return (
         <html lang="en">
             <body>
-            <div id="app-root"> {/* ✅ Add this */}
+            <div id="app-root">
                 <ModalSetup />
                 <Navbar />
                 {children}

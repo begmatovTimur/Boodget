@@ -16,12 +16,14 @@ import {
     Calendar,
     CalendarDays, ChartPie, LineChart, Receipt, Banknote, CircleDollarSign
 } from "lucide-react";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 
 const Navbar = () => {
     const [userData, setUserData] = useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
+    const pathname = usePathname();
 
     const router = useRouter();
 
@@ -31,7 +33,7 @@ const Navbar = () => {
             if (status === "authFail") {
                 setUserData(null);
             }
-                getUserInfo()
+            getUserInfo()
         };
 
         window.addEventListener("statusChanged", handleStatusChange);
@@ -59,10 +61,10 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="bg-[#0f0f0f] px-6 py-4 shadow-lg">
+        <nav className="sticky top-0 bg-[#0f0f0f] px-6 py-4 shadow-lg">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 {/* Left: Logo */}
-                <button className="flex items-center gap-2 cursor-pointer" onClick={()=>router.push("/")}>
+                <button className="flex items-center gap-2 cursor-pointer" onClick={() => router.push("/")}>
                     <Wallet2 className="text-yellow-400 w-7 h-7"/>
                     <span className="text-yellow-400 text-2xl font-bold tracking-wide">Boodget</span>
                 </button>
@@ -76,25 +78,46 @@ const Navbar = () => {
 
                 {/* Center: Navigation (Desktop only) */}
                 {userData && (
-                    <div className="hidden md:flex gap-6">
-                        <button
-                            className="text-white hover:text-yellow-400 font-medium flex items-center gap-1 cursor-pointer"
-                            onClick={()=>router.push("/breakdown")}
-                        >
-                            <ChartPie className="w-5 h-5"/>
-                            Breakdown
-                        </button>
-                        <button className="text-white hover:text-yellow-400 font-medium flex items-center gap-1 cursor-pointer">
-                            <LineChart className="w-5 h-5"/>
-                            Trends
-                        </button>
-                        <button
-                            className="text-white hover:text-yellow-400 font-medium flex items-center gap-1 cursor-pointer"
-                            onClick={()=>router.push("/transactions")}
-                        >
-                            <CircleDollarSign className="w-5 h-5"/>
-                            Transactions
-                        </button>
+                    <div className="max-w-7xl mx-auto flex justify-between items-center">
+
+                        {/* Buttons */}
+                        <div className="hidden md:flex gap-6">
+                            <button
+                                className={`font-medium flex items-center gap-1 cursor-pointer ${
+                                    pathname === "/breakdown"
+                                        ? "text-yellow-400"
+                                        : "text-white hover:text-yellow-400"
+                                }`}
+                                onClick={() => router.push("/breakdown")}
+                            >
+                                <ChartPie className="w-5 h-5"/>
+                                Breakdown
+                            </button>
+
+                            <button
+                                className={`font-medium flex items-center gap-1 cursor-pointer ${
+                                    pathname === "/trends"
+                                        ? "text-yellow-400"
+                                        : "text-white hover:text-yellow-400"
+                                }`}
+                                onClick={() => router.push("/trends")}
+                            >
+                                <LineChart className="w-5 h-5"/>
+                                Trends
+                            </button>
+
+                            <button
+                                className={`font-medium flex items-center gap-1 cursor-pointer ${
+                                    pathname === "/transactions"
+                                        ? "text-yellow-400"
+                                        : "text-white hover:text-yellow-400"
+                                }`}
+                                onClick={() => router.push("/transactions")}
+                            >
+                                <CircleDollarSign className="w-5 h-5"/>
+                                Transactions
+                            </button>
+                        </div>
                     </div>
                 )}
 
@@ -103,27 +126,38 @@ const Navbar = () => {
                     <div className="hidden md:flex items-center gap-4">
                         {!isLoading && (
                             userData ? (
-                                <button className="group flex items-center gap-3 cursor-pointer">
-                                    <UserCircle2 className="text-white w-6 h-6 group-hover:text-yellow-400 transition-colors" />
-                                    <span className="text-white font-semibold group-hover:text-yellow-400 transition-colors">
+                                <button
+                                    className={
+                                        `group flex items-center gap-3 cursor-pointer
+                                    ${pathname === "/account"
+                                            ? "text-yellow-400"
+                                            : "text-white hover:text-yellow-400"}
+                                    `}
+
+                                    onClick={() => router.push("/account")}
+                                >
+                                    <UserCircle2 className="w-6 h-6 group-hover:text-yellow-400 transition-colors"/>
+                                    <span className="font-semibold group-hover:text-yellow-400 transition-colors">
                                         {userData.username}
                                     </span>
-                                    <span className="text-white font-semibold group-hover:text-yellow-400 transition-colors">
+                                    <span className="font-semibold group-hover:text-yellow-400 transition-colors">
                                         |
                                     </span>
-                                    <span className="text-white font-semibold group-hover:text-yellow-400 transition-colors">
+                                    <span className="font-semibold group-hover:text-yellow-400 transition-colors">
                                         ${userData.balance}
                                     </span>
                                 </button>
                             ) : (
                                 <>
                                     <Link href="/auth/login">
-                                        <button className="px-5 py-2 border border-yellow-500 text-yellow-400 rounded-md hover:bg-yellow-500 hover:text-black transition font-medium cursor-pointer">
+                                        <button
+                                            className="px-5 py-2 border border-yellow-500 text-yellow-400 rounded-md hover:bg-yellow-500 hover:text-black transition font-medium cursor-pointer">
                                             Login
                                         </button>
                                     </Link>
                                     <Link href="/auth/register">
-                                        <button className="px-5 py-2 bg-yellow-500 text-black rounded-md hover:bg-yellow-600 transition font-semibold cursor-pointer">
+                                        <button
+                                            className="px-5 py-2 bg-yellow-500 text-black rounded-md hover:bg-yellow-600 transition font-semibold cursor-pointer">
                                             Sign Up
                                         </button>
                                     </Link>
@@ -152,12 +186,13 @@ const Navbar = () => {
                                 </button>
                                 <button
                                     className="text-white hover:text-yellow-400 font-medium flex items-center gap-2"
-                                    onClick={()=>router.push("/transactions")}
+                                    onClick={() => router.push("/transactions")}
                                 >
                                     <ScrollText className="w-5 h-5"/>
                                     Transactions
                                 </button>
-                                <button className="text-white hover:text-yellow-400 font-medium flex items-center gap-1 cursor-pointer">
+                                <button
+                                    className="text-white hover:text-yellow-400 font-medium flex items-center gap-1 cursor-pointer">
                                     <CircleDollarSign className="w-5 h-5"/>
                                     Transactions
                                 </button>

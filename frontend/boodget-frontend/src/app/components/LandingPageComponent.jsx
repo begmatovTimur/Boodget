@@ -45,7 +45,7 @@ const LandingPageComponent = () => {
     if (!hasCheckedAuth) return <LoaderComponent/>;
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="h-auto bg-white">
             {
                 isLoggedIn
                     ? <ReportDashboardComponent/>

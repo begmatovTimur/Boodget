@@ -12,7 +12,7 @@ import {useRouter} from "next/navigation";
 
 
 const TransactionsComponent = () => {
-    const [activeTab, setActiveTab] = useState("expense");
+    const [activeTab, setActiveTab] = useState(null);
 
     const [filteredData, setFilteredData] = useState([]);
     const [filteredClassificationData, setFilteredClassificationData] = useState([]);
@@ -20,7 +20,7 @@ const TransactionsComponent = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedSource, setSelectedSource] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
-    const [sortOrder, setSortOrder] = useState(true);
+    const [sortOrder, setSortOrder] = useState(null);
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [itemId, setItemId] = useState(null);
@@ -43,6 +43,12 @@ const TransactionsComponent = () => {
             getExpenseData()
             getExpenseSourceData()
 
+        }
+        const currentTab = localStorage.getItem("transactions_tab")
+        if (currentTab === "expense") {
+            setActiveTab("expense");
+        } else {
+            setActiveTab("income");
         }
     }, [activeTab, selectedCategory, selectedSource, selectedDate, sortOrder]);
 
@@ -71,19 +77,15 @@ const TransactionsComponent = () => {
         if (selectedSource) {
             filterData.source = selectedSource.id;
         }
-        if (sortOrder) {
-            filterData.up_down = true;
-            filterData.down_up = false;
-        } else {
-            filterData.up_down = false;
-            filterData.down_up = true;
-        }
+
+        filterData.order = sortOrder
+
 
         apiRequest(`/transactions/incomes/filter`, "POST", filterData).then((response) => {
             console.log(response.data);
             setFilteredData(response.data);
         }).catch((error) => {
-           handleError();
+            toast.error("Server error");
         })
     }
 
@@ -96,19 +98,14 @@ const TransactionsComponent = () => {
         if (selectedCategory) {
             filterData.category = selectedCategory.id;
         }
-        if (sortOrder) {
-            filterData.up_down = true;
-            filterData.down_up = false;
-        } else {
-            filterData.up_down = false;
-            filterData.down_up = true;
-        }
+        filterData.order = sortOrder
+        console.log(filterData)
 
         apiRequest(`/transactions/expenses/filter`, "POST", filterData).then((response) => {
             console.log(response.data);
             setFilteredData(response.data);
         }).catch((error) => {
-            handleError()
+            toast.error("Server error");
         });
     }
 
@@ -126,15 +123,9 @@ const TransactionsComponent = () => {
             console.log(res);
             setFilteredClassificationData(res);
         }).catch((error) => {
-            handleError()
+            toast.error("Server error");
         })
     }
-
-    const ExpenseTabClick = () => {
-        setActiveTab('expense')
-    }
-
-    const handleClassificationChange = () => setShowClassificationComponent((prev) => !prev);
 
     const handleSelectClassification = (item) => {
         if (activeTab === "income") {
@@ -151,14 +142,14 @@ const TransactionsComponent = () => {
                 getExpenseData()
                 toast.success("Expense has been deleted successfully!");
             }).catch((error) => {
-                handleError()
+                toast.error("Server error");
             });
         } else if (activeTab === "income") {
             apiRequest(`/transactions/incomes/${item}/`, "DELETE").then((response) => {
                 getIncomeData()
                 toast.success("Income has been deleted successfully!");
             }).catch((error) => {
-                handleError()
+                toast.error("Server error");
             });
         }
     }
@@ -176,14 +167,14 @@ const TransactionsComponent = () => {
                 toast.success("Income has been added successfully!");
                 getIncomeData()
             }).catch((error) => {
-               handleError()
+                toast.error("Server error");
             })
         } else {
             apiRequest(`/transactions/expenses/`, "POST", formData).then((response) => {
                 toast.success("Expense has been added successfully!");
                 getExpenseData()
             }).catch((error) => {
-                handleError()
+                toast.error("Server error");
             })
         }
     };
@@ -200,7 +191,7 @@ const TransactionsComponent = () => {
                 activeTab === "income" ? getIncomeData() : getExpenseData();
             })
             .catch((error) => {
-                handleError()
+                toast.error("Server error");
             });
     };
 
@@ -214,33 +205,47 @@ const TransactionsComponent = () => {
         setEditingItemForm({})
     }
 
+    const handleTab = (tab) => {
+        setActiveTab(tab)
+        localStorage.setItem("transactions_tab", tab);
+    }
+
+    const handleCalendarChange = () => {
+        setShowClassificationComponent(false)
+        setOpen((prev) => !prev)
+    }
+
+    const handleClassificationChange = () => {
+        setOpen(false)
+        setShowClassificationComponent((prev) => !prev)
+    };
+
     return (
         <div className="min-h-screen bg-white p-6">
             {/* Income / Expense Toggle */}
-            <div className="flex gap-4 mb-6">
-                <button
-                    onClick={() => setActiveTab('income')}
-                    className={`px-4 py-2 rounded-xl shadow-sm font-medium cursor-pointer ${
-                        activeTab === 'income' ? 'bg-blue-600 text-white' : 'bg-gray-100'
-                    }`}
-                >
-                    Income
-                </button>
-                <button
-                    onClick={() => ExpenseTabClick()}
-                    className={`px-4 py-2 rounded-xl shadow-sm font-medium cursor-pointer ${
-                        activeTab === 'expense' ? 'bg-red-600 text-white' : 'bg-gray-100'
-                    }`}
-                >
-                    Expense
-                </button>
+            <div className="flex gap-4 mb-6 justify-start">
+                {["income", "expense"].map((tab) => (
+                    <button
+                        key={tab}
+                        onClick={() => handleTab(tab)}
+                        className={`px-5 py-2 rounded-2xl font-semibold transition-shadow duration-200 cursor-pointer ${
+                            activeTab === tab
+                                ? tab === "income"
+                                    ? "bg-green-500 text-white shadow-lg"
+                                    : "bg-red-500 text-white shadow-lg"
+                                : "bg-gray-100 text-gray-600 hover:shadow-md"
+                        }`}
+                    >
+                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </button>
+                ))}
             </div>
 
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-4 mb-6">
                 <button
-                    className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow cursor-pointer"
-                    onClick={()=>addTransaction()}
+                    className="appearance-none flex items-center gap-1 bg-white text-green-600 border  px-4 py-2 pr-10 rounded-lg shadow-sm hover:bg-green-600 hover:text-white hover:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 transition cursor-pointer"
+                    onClick={() => addTransaction()}
                 >
                     <Plus size={18}/> Add {activeTab}
                 </button>
@@ -248,15 +253,15 @@ const TransactionsComponent = () => {
                     <TransactionForm
                         activeTab={activeTab}
                         onClose={() => closeFormModal()}
-                        onSubmit={editingItemForm?handleTransactionEditSubmit:handleTransactionSubmit}
+                        onSubmit={editingItemForm ? handleTransactionEditSubmit : handleTransactionSubmit}
                         classification={filteredClassificationData}
-                        editingItem = {editingItemForm}
+                        editingItem={editingItemForm}
                     />
                 )}
                 <div className="relative inline-block">
                     <button
-                        onClick={() => setOpen((prev) => !prev)}
-                        className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg cursor-pointer"
+                        onClick={handleCalendarChange}
+                        className="appearance-none flex items-center gap-1 bg-white border border-gray-300 text-gray-700 px-4 py-2 pr-10 rounded-lg shadow-sm hover:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 transition cursor-pointer"
                     >
                         <CalendarDays size={18}/>
                         {selectedDate ? format(selectedDate, "dd MMM yyyy") : "Date"}
@@ -274,7 +279,8 @@ const TransactionsComponent = () => {
                 </div>
                 <div className="relative inline-block">
                     <button
-                        className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg cursor-pointer"
+                        className="appearance-none flex items-center gap-1 bg-white border border-gray-300 text-gray-700 px-4 py-2 pr-10 rounded-lg shadow-sm hover:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 transition cursor-pointer"
+
                         onClick={handleClassificationChange}
                     >
                         <Filter size={18}/>
@@ -316,18 +322,35 @@ const TransactionsComponent = () => {
                 </div>
 
 
-                <button
-                    className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg cursor-pointer"
-                    onClick={() => setSortOrder(true)}
-                >
-                    <ArrowDown size={18}/> Lowest
-                </button>
-                <button
-                    className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg cursor-pointer"
-                    onClick={() => setSortOrder(false)}
-                >
-                    <ArrowUp size={18}/> Highest
-                </button>
+                {["desc", "asc", "newest", "latest"].map((order) => (
+                    <button
+                        key={order}
+                        onClick={() => setSortOrder(order)}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition cursor-pointer ${
+                            sortOrder === order
+                                ? "bg-indigo-500 text-white shadow-md"
+                                : "bg-gray-100 hover:shadow-sm"
+                        }`}
+                    >
+                        {/* Icon logic */}
+                        {order === "desc" || order === "newest" ? (
+                            <ArrowUp size={16}/>
+                        ) : (
+                            <ArrowDown size={16}/>
+                        )}
+
+                        {/* Label logic */}
+                        {order === "desc"
+                            ? "Highest"
+                            : order === "asc"
+                                ? "Lowest"
+                                : order === "newest"
+                                    ? "Newest"
+                                    : "Latest"}
+                    </button>
+                ))}
+
+
                 <button
                     className="flex items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm border border-red-200 cursor-pointer"
                     onClick={() => handleClearFilters()}
@@ -386,15 +409,15 @@ const TransactionsComponent = () => {
                                 <div className="flex gap-2">
                                     <button
                                         className="text-blue-600 hover:text-blue-800 cursor-pointer"
-                                        onClick={()=>editItem(item)}
+                                        onClick={() => editItem(item)}
                                     >
-                                        <Edit size={18} />
+                                        <Edit size={18}/>
                                     </button>
                                     <button
                                         onClick={() => openModal(item.id)}
                                         className="text-red-600 hover:text-red-800 cursor-pointer"
                                     >
-                                        <Trash2 size={18} />
+                                        <Trash2 size={18}/>
                                     </button>
                                 </div>
                             </td>

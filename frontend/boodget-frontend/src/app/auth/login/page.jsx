@@ -19,7 +19,8 @@ const Page = () => {
     const router = useRouter();
 
 
-    const LoginUser = async () => {
+    const LoginUser = async (e) => {
+        if (e) e.preventDefault();
         if (username && password) {
             const userObject = {
                 username,
@@ -43,7 +44,8 @@ const Page = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-black text-white">
-            <div
+            <form
+                onSubmit={LoginUser}
                 className="bg-[#111] border border-yellow-500 rounded-2xl p-10 w-full max-w-lg space-y-6 shadow-xl"
             >
                 <h2 className="text-3xl font-bold text-yellow-500 text-center mb-4">
@@ -78,18 +80,17 @@ const Page = () => {
                 <button
                     type="submit"
                     className="w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-md transition cursor-pointer"
-                    onClick={() => LoginUser()}
                 >
                     Login
                 </button>
 
                 <p className="text-sm text-center text-gray-400 mt-2">
-                    Don’t have an account?{' '}
+                    Don’t have an account? {' '}
                     <Link href="/auth/register" className="text-yellow-500 hover:underline">
                         Register
                     </Link>
                 </p>
-            </div>
+            </form>
         </div>
     );
 };

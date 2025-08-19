@@ -41,56 +41,84 @@ const TransactionForm = ({ activeTab, onClose, onSubmit, classification = [], ed
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
-                <h2 className="text-xl font-semibold mb-4">
-                    {editingItem?.id ? "Edit" : "Add"} {activeTab === "income" ? "Income" : "Expense"}
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-xl border border-gray-100">
+                {/* Title */}
+                <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+                    {editingItem?.id ? "Edit" : "Add"}{" "}
+                    <span className={activeTab === "income" ? "text-green-600" : "text-red-500"}>
+        {activeTab === "income" ? "Income" : "Expense"}
+      </span>
                 </h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="number"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder="Amount"
-                        className="w-full border p-2 rounded"
-                        required
-                    />
 
-                    <select
-                        value={selectValue}
-                        onChange={(e) => setSelectValue(e.target.value)}
-                        className="w-full border p-2 rounded"
-                        required
-                    >
-                        <option value="">
-                            Select {activeTab === "income" ? "Source" : "Category"}
-                        </option>
-                        {classification.map((item) => (
-                            <option key={item.id} value={item.id}>
-                                {item.name}
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Amount */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-600 mb-1">Amount</label>
+                        <input
+                            type="number"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-") {
+                                    e.preventDefault();
+                                }
+                            }}
+                            placeholder="0.00"
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition shadow-sm"
+                            required
+                        />
+
+
+                    </div>
+
+                    {/* Source / Category */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-600 mb-1">
+                            {activeTab === "income" ? "Source" : "Category"}
+                        </label>
+                        <select
+                            value={selectValue}
+                            onChange={(e) => setSelectValue(e.target.value)}
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition shadow-sm"
+                            required
+                        >
+                            <option value="">
+                                Select {activeTab === "income" ? "Source" : "Category"}
                             </option>
-                        ))}
-                    </select>
+                            {classification.map((item) => (
+                                <option key={item.id} value={item.id}>
+                                    {item.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                    <input
-                        type="text"
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        placeholder="Note"
-                        className="w-full border p-2 rounded"
-                    />
+                    {/* Note */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-600 mb-1">Note</label>
+                        <input
+                            type="text"
+                            value={note}
+                            onChange={(e) => setNote(e.target.value)}
+                            placeholder="e.g. Bought coffee ☕"
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition shadow-sm"
+                        />
+                    </div>
 
-                    <div className="flex justify-end gap-2">
+                    {/* Buttons */}
+                    <div className="flex justify-end gap-3 pt-2">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 bg-gray-300 rounded cursor-pointer"
+                            className="px-5 py-2.5 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition cursor-pointer"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-green-600 text-white rounded cursor-pointer"
+                            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 text-white font-medium hover:from-indigo-600 hover:to-indigo-700 shadow-md transition cursor-pointer"
                         >
                             Save
                         </button>
@@ -98,6 +126,7 @@ const TransactionForm = ({ activeTab, onClose, onSubmit, classification = [], ed
                 </form>
             </div>
         </div>
+
     );
 };
 

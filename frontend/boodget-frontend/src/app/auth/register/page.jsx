@@ -23,7 +23,8 @@ const Page = () => {
 
 
 
-    const registerUser = async () => {
+    const registerUser = async (e) => {
+        if (e) e.preventDefault();
         if (firstName && lastName && username && password && passwordConfirm) {
                 const userObject = {
                     first_name: firstName,
@@ -58,7 +59,8 @@ const Page = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-black text-white">
 
-            <div
+            <form
+                onSubmit={registerUser}
                 className="bg-[#111] border border-yellow-500 rounded-2xl p-10 w-full max-w-lg space-y-5 shadow-xl"
             >
                 <h2 className="text-3xl font-bold text-yellow-500 text-center mb-4">
@@ -117,7 +119,6 @@ const Page = () => {
                 <button
                     type="submit"
                     className="w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-md transition cursor-pointer"
-                    onClick={() => registerUser()}
                 >
                     Register
                 </button>
@@ -128,7 +129,7 @@ const Page = () => {
                         Login
                     </Link>
                 </p>
-            </div>
+            </form>
         </div>
     );
 };
