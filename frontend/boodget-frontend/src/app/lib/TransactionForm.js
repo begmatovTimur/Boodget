@@ -14,6 +14,7 @@ const TransactionForm = ({ activeTab, onClose, onSubmit, classification = [], ed
                     ? editingItem.source?.id || ""
                     : editingItem.category_details?.id || editingItem.category || ""
             );
+            console.log("asd")
         } else {
             setAmount("");
             setNote("");
