@@ -71,7 +71,7 @@ const BreakdownComponent = () => {
             x_month: `${xYear}-${xMonth}`,
             y_month: `${yYear}-${yMonth}`,
         }
-        apiRequest("/transactions/breakdown/", "POST", filterParams).then(response => {
+        apiRequest("transactions/breakdown/", "POST", filterParams).then(response => {
             console.log(response.data);
             setFilteredData(response.data);
             setIncomeData([

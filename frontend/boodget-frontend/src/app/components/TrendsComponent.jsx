@@ -78,7 +78,7 @@ const TrendsComponent = () => {
         // Sorting logic
         filterData.sort_by = sortOrder;
 
-        apiRequest(`/transactions/trends/incomes`, "POST", filterData)
+        apiRequest(`transactions/trends/incomes`, "POST", filterData)
             .then((response) => {
                 setFilteredData(response);
                 console.log(response);
@@ -94,7 +94,7 @@ const TrendsComponent = () => {
         // Sorting logic
         filterData.sort_by = sortOrder;
 
-        apiRequest(`/transactions/trends/expenses`, "POST", filterData)
+        apiRequest(`transactions/trends/expenses`, "POST", filterData)
             .then((response) => {
                 console.log(response);
                 setFilteredData(response);

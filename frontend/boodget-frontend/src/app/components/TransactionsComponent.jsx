@@ -81,7 +81,7 @@ const TransactionsComponent = () => {
         filterData.order = sortOrder
 
 
-        apiRequest(`/transactions/incomes/filter`, "POST", filterData).then((response) => {
+        apiRequest(`transactions/incomes/filter`, "POST", filterData).then((response) => {
             console.log(response.data);
             setFilteredData(response.data);
         }).catch((error) => {
@@ -101,7 +101,7 @@ const TransactionsComponent = () => {
         filterData.order = sortOrder
         console.log(filterData)
 
-        apiRequest(`/transactions/expenses/filter`, "POST", filterData).then((response) => {
+        apiRequest(`transactions/expenses/filter`, "POST", filterData).then((response) => {
             console.log(response.data);
             setFilteredData(response.data);
         }).catch((error) => {
@@ -110,16 +110,16 @@ const TransactionsComponent = () => {
     }
 
     const getIncomeSourceData = () => {
-        apiRequest("/transactions/income-sources", "GET").then(res => {
+        apiRequest("transactions/income-sources", "GET").then(res => {
             console.log(res);
             setFilteredClassificationData(res);
         }).catch((error) => {
-            handleError()
+            toast.error("Server error");
         })
     }
 
     const getExpenseSourceData = () => {
-        apiRequest("/transactions/expense-categories", "GET").then(res => {
+        apiRequest("transactions/expense-categories", "GET").then(res => {
             console.log(res);
             setFilteredClassificationData(res);
         }).catch((error) => {
@@ -137,7 +137,7 @@ const TransactionsComponent = () => {
 
     const handleDelete = (item) => {
         if (activeTab === "expense") {
-            apiRequest(`/transactions/expenses/${item}/`, "DELETE").then((response) => {
+            apiRequest(`transactions/expenses/${item}/`, "DELETE").then((response) => {
                 console.log(response);
                 getExpenseData()
                 toast.success("Expense has been deleted successfully!");
@@ -145,7 +145,7 @@ const TransactionsComponent = () => {
                 toast.error("Server error");
             });
         } else if (activeTab === "income") {
-            apiRequest(`/transactions/incomes/${item}/`, "DELETE").then((response) => {
+            apiRequest(`transactions/incomes/${item}/`, "DELETE").then((response) => {
                 getIncomeData()
                 toast.success("Income has been deleted successfully!");
             }).catch((error) => {
@@ -163,14 +163,14 @@ const TransactionsComponent = () => {
 
     const handleTransactionSubmit = async (formData) => {
         if (activeTab === "income") {
-            apiRequest(`/transactions/incomes/`, "POST", formData).then((response) => {
+            apiRequest(`transactions/incomes/`, "POST", formData).then((response) => {
                 toast.success("Income has been added successfully!");
                 getIncomeData()
             }).catch((error) => {
                 toast.error("Server error");
             })
         } else {
-            apiRequest(`/transactions/expenses/`, "POST", formData).then((response) => {
+            apiRequest(`transactions/expenses/`, "POST", formData).then((response) => {
                 toast.success("Expense has been added successfully!");
                 getExpenseData()
             }).catch((error) => {
@@ -182,8 +182,8 @@ const TransactionsComponent = () => {
     const handleTransactionEditSubmit = async (formData) => {
         const endpoint =
             activeTab === "income"
-                ? `/transactions/incomes/${formData.id}/`
-                : `/transactions/expenses/${formData.id}/`;
+                ? `transactions/incomes/${formData.id}/`
+                : `transactions/expenses/${formData.id}/`;
 
         apiRequest(endpoint, "PUT", formData)
             .then((response) => {
