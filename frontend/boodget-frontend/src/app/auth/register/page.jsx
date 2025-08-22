@@ -33,6 +33,7 @@ const Page = () => {
                     password,
                     role: 1
                 };
+            console.log(firstName)
 
                 if (userObject.password === passwordConfirm) {
                     await apiRequest("auth/register/", "POST", userObject).then(response => {
