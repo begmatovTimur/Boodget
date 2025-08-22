@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next start",
     "lint": "next lint"
   },
@@ -13,20 +13,15 @@
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.9",
     "lucide-react": "^0.525.0",
-    "next": "15.3.5",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
     "postcss": "^8.5.6",
-    "react": "^19.0.0",
     "react-datepicker": "^8.4.0",
-    "react-dom": "^19.0.0",
     "react-modal": "^3.16.3",
     "react-toastify": "^11.0.5",
     "recharts": "^3.1.0",
     "tailwind-merge": "^3.3.1"
-  },
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build --output public",
-    "start": "next start"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
