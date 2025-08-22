@@ -25,7 +25,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "build": "next build --output public",
     "start": "next start"
   },
   "devDependencies": {
