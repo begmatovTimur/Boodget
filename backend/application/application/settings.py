@@ -153,7 +153,9 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://192.168.1.11:3000"
+    "http://192.168.1.11:3000",
+    "https://boodget-git-master-timurs-projects-019ed8cc.vercel.app",
+    "https://boodget-d4fkvkjr5-timurs-projects-019ed8cc.vercel.app",
 ]
 
 CORS_ALLOW_HEADERS = [
