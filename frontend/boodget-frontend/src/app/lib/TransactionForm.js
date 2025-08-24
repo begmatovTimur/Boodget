@@ -105,6 +105,7 @@ const TransactionForm = ({ activeTab, onClose, onSubmit, classification = [], ed
                             onChange={(e) => setNote(e.target.value)}
                             placeholder="e.g. Bought coffee ☕"
                             className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition shadow-sm"
+                            required
                         />
                     </div>
 

@@ -5,7 +5,8 @@ import {apiRequest} from "@/app/lib/api";
 import {router} from "next/client";
 import {useRouter} from "next/navigation";
 import LoaderComponent from "@/app/components/LoaderComponent";
-import DynamicLucideIcon from "@/app/lib/DynamicLucideIcon"; // your classnames merging function if any
+import DynamicLucideIcon from "@/app/lib/DynamicLucideIcon";
+import {toast} from "react-toastify"; // your classnames merging function if any
 
 const RANGE_OPTIONS = ["today", "week", "month"];
 const COLORS = ["#00c49f", "#ff8042"];
@@ -78,11 +79,12 @@ export default function ReportDashboardComponent() {
                 setTotalIncome(totalIncomeData)
                 setTotalExpense(totalExpenseData)
             })
-            .catch((error) => {
-                localStorage.removeItem("access");
-                localStorage.removeItem("refresh");
-                localStorage.setItem("status", "authFail");
-                window.dispatchEvent(new Event("statusChanged"));
+            .catch((err) => {
+                if (err.status === 400) {
+                    toast.error("API error");
+                } else if (err.status === 401) {
+                    handleError()
+                }
 
                 setPieData([]);
                 setBarData([]);
@@ -99,6 +101,15 @@ export default function ReportDashboardComponent() {
         }
         return today.toLocaleString("en-US", {month: "long"});
     };
+
+    const handleError = () => {
+        toast.error("Unauthorized");
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        localStorage.setItem("status", "authFail");
+        router.push("/")
+        window.dispatchEvent(new Event("statusChanged"));
+    }
 
 
     return (

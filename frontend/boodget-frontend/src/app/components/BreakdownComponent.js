@@ -1,3 +1,5 @@
+'use client'
+
 import React, {useState, useEffect} from "react";
 import {
     BarChart,
@@ -10,6 +12,7 @@ import {
 } from "recharts";
 import {apiRequest} from "@/app/lib/api";
 import {toast} from "react-toastify";
+import {useRouter} from "next/navigation";
 
 const monthsList = [
     { id: 1, name: "January" },
@@ -52,6 +55,8 @@ const BreakdownComponent = () => {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
 
+    const router = useRouter();
+
     const [xMonth, setXMonth] = useState(currentMonth);
     const [xYear, setXYear] = useState(currentYear);
     const [yMonth, setYMonth] = useState(currentMonth - 1);
@@ -91,9 +96,22 @@ const BreakdownComponent = () => {
                 {name: monthsList[yMonth-1].name, value: response.data.y_month.income-response.data.y_month.expense},
                 {name: "Last 3 Avg", value: response.data.avg.income-response.data.avg.expense},
             ])
-        }).catch(error => {
-            toast.error("Server error")
+        }).catch(err => {
+            if (err.status === 400) {
+                toast.error("API error");
+            } else if (err.status === 401) {
+                handleError()
+            }
         })
+    }
+
+    const handleError = () => {
+        toast.error("Unauthorized");
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        localStorage.setItem("status", "authFail");
+        router.push("/")
+        window.dispatchEvent(new Event("statusChanged"));
     }
 
     const renderChart = (data) => (

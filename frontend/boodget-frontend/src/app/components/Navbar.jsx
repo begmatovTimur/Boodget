@@ -44,8 +44,16 @@ const Navbar = () => {
     }, []);
 
     useEffect(() => {
-        getUserInfo()
+        window.addEventListener("transaction_made", getUserInfo);
+
+        return () => {
+            window.removeEventListener("transaction_made", getUserInfo);
+        };
     }, [])
+
+    useEffect(()=>{
+        getUserInfo()
+    },[])
 
     const getUserInfo = () => {
         apiRequest("transactions/user-info/")
@@ -53,7 +61,7 @@ const Navbar = () => {
                 setUserData(res)
                 setIsLoading(false)
             })
-            .catch(() => {
+            .catch((err) => {
                 console.log("ERROR HAS BEEN OCCURED")
                 setUserData(null);
                 setIsLoading(false)

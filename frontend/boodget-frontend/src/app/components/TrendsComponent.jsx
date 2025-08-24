@@ -42,13 +42,6 @@ const TrendsComponent = () => {
 
     const router = useRouter();
 
-    const handleError = () => {
-        localStorage.removeItem("access");
-        localStorage.removeItem("refresh");
-        localStorage.setItem("status", "authFail");
-        router.push("/");
-        window.dispatchEvent(new Event("statusChanged"));
-    };
 
     const handleClearFilters = () => {
         setSelectedMonth(currentMonth);
@@ -83,7 +76,13 @@ const TrendsComponent = () => {
                 setFilteredData(response);
                 console.log(response);
             })
-            .catch((error) => toast.error("Server error"));
+            .catch((err) => {
+                if (err.status === 400) {
+                    toast.error("API error");
+                } else if (err.status === 401) {
+                    handleError()
+                }
+            });
     };
 
     const getExpenseData = () => {
@@ -98,7 +97,13 @@ const TrendsComponent = () => {
             .then((response) => {
                 console.log(response);
                 setFilteredData(response);
-            }).catch((er) =>  toast.error("Server error"));
+            }).catch((err) => {
+                if (err.status === 400) {
+                    toast.error("API error");
+                } else if (err.status === 401) {
+                    handleError()
+                }
+        });
     };
 
     const handleTab = (tab) => {
@@ -106,6 +111,14 @@ const TrendsComponent = () => {
         localStorage.setItem("trends_tab", tab);
     }
 
+    const handleError = () => {
+        toast.error("Unauthorized");
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        localStorage.setItem("status", "authFail");
+        router.push("/")
+        window.dispatchEvent(new Event("statusChanged"));
+    }
 
 
     return (
@@ -195,36 +208,38 @@ const TrendsComponent = () => {
 
             {/* Table */}
             <div className="overflow-x-auto">
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full border border-gray-200 rounded-xl overflow-hidden">
-                            <thead className="bg-gray-100 text-left">
-                            <tr>
-                                <th className="px-4 py-2 border-b">ID</th>
-                                <th className="px-4 py-2 border-b">{activeTab === "income" ? "Source" : "Category"}</th>
-                                <th className="px-4 py-2 border-b">Amount</th>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full border border-gray-200 rounded-xl overflow-hidden">
+                        <thead className="bg-gray-100 text-left">
+                        <tr>
+                            <th className="px-4 py-2 border-b">ID</th>
+                            <th className="px-4 py-2 border-b">{activeTab === "income" ? "Source" : "Category"}</th>
+                            <th className="px-4 py-2 border-b">Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {filteredData.map((item, index) => (
+                            <tr key={item.id} className="border-b hover:bg-gray-50">
+                                <td className="px-4 py-2">{index + 1}</td>
+                                <td className="px-4 py-2 flex items-center gap-2">
+                                    {item.icon &&
+                                        <DynamicLucideIcon name={item.icon} className="w-5 h-5 text-gray-400"/>}
+                                    <span
+                                        className="truncate">{activeTab === "income" ? item?.source : item?.category}</span>
+                                </td>
+                                <td className="px-4 py-2 font-medium text-gray-700">${item?.total_amount}</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {filteredData.map((item, index) => (
-                                <tr key={item.id} className="border-b hover:bg-gray-50">
-                                    <td className="px-4 py-2">{index + 1}</td>
-                                    <td className="px-4 py-2 flex items-center gap-2">
-                                        {item?.icon && <DynamicLucideIcon name={item.icon} className="w-5 h-5 text-gray-400 flex-shrink-0"/>}
-                                        <span className="truncate">{activeTab === "income" ? item?.source : item?.category}</span>
-                                    </td>
-                                    <td className="px-4 py-2 font-medium text-gray-700">${item.total_amount}</td>
-                                </tr>
-                            ))}
-                            {filteredData.length === 0 && (
-                                <tr>
-                                    <td colSpan={5} className="text-center py-4 text-gray-400 italic">
-                                        No {activeTab} analytics found.
-                                    </td>
-                                </tr>
-                            )}
-                            </tbody>
-                        </table>
-                    </div>
+                        ))}
+                        {filteredData.length === 0 && (
+                            <tr>
+                                <td colSpan={5} className="text-center py-4 text-gray-400 italic">
+                                    No {activeTab} analytics found.
+                                </td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
+                </div>
                 {/*)}*/}
 
             </div>

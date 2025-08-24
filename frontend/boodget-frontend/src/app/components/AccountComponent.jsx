@@ -31,6 +31,12 @@ export default function AccountComponent() {
         apiRequest('auth/profile/', "GET").then(res => {
             console.log(res);
             setUserData(res);
+        }).catch(err => {
+            if (err.status === 400) {
+                toast.error("API error");
+            } else if (err.status === 401) {
+                handleError()
+            }
         })
     }
 
@@ -38,6 +44,12 @@ export default function AccountComponent() {
         apiRequest('auth/profile/', "PATCH", data).then(res => {
             getProfileData()
             toast.success("Profile Updated Successfully!");
+        }).catch(err=>{
+            if (err.status === 400) {
+                toast.error("API error");
+            } else if (err.status === 401) {
+                handleError()
+            }
         })
     }
 
@@ -61,15 +73,14 @@ export default function AccountComponent() {
     };
 
 
-
     const handlePasswordFormChange = (e) => {
-        setPasswordResetFormData({ ...passwordResetFormData, [e.target.name]: e.target.value });
+        setPasswordResetFormData({...passwordResetFormData, [e.target.name]: e.target.value});
         setError("");
     };
 
     const closeResetPasswordModal = () => {
         setIsResetPasswordModalOpen(false)
-        setPasswordResetFormData({ current_password: "", new_password: "", confirm_new_password: "" });
+        setPasswordResetFormData({current_password: "", new_password: "", confirm_new_password: ""});
     };
 
 
@@ -84,16 +95,22 @@ export default function AccountComponent() {
             closeResetPasswordModal()
             getProfileData()
         }).catch(err => {
-            toast.error("Old password is incorrect!");
+            console.log(err)
+            if (err.status === 400) {
+                toast.error("Old password is incorrect!");
+            } else if (err.status === 401) {
+                handleError()
+            }
         })
     };
 
-    if (!userData) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex justify-center items-center">
-                <p className="text-gray-500">Loading profile...</p>
-            </div>
-        );
+    const handleError = () => {
+        toast.error("Unauthorized");
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        localStorage.setItem("status", "authFail");
+        router.push("/")
+        window.dispatchEvent(new Event("statusChanged"));
     }
 
     const handleLogout = () => {
@@ -105,13 +122,23 @@ export default function AccountComponent() {
         window.dispatchEvent(new Event("statusChanged"));
     }
 
+    if (!userData) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+                <p className="text-gray-500">Loading profile...</p>
+            </div>
+        );
+    }
+
+
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 pt-28 flex justify-center">
             <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden">
 
                 {/* Header */}
                 <div className="flex items-center gap-6 bg-gradient-to-r from-yellow-400/20 to-yellow-500/10 p-8">
-                    <UserCircle2 className="w-24 h-24 text-yellow-500 flex-shrink-0" />
+                    <UserCircle2 className="w-24 h-24 text-yellow-500 flex-shrink-0"/>
                     <div>
                         <h2 className="text-2xl font-bold text-gray-900 tracking-tight">{userData.username}</h2>
                         <p className="mt-1 text-gray-600">
@@ -145,19 +172,19 @@ export default function AccountComponent() {
                         onClick={() => openModal()}
                         className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-yellow-500 text-black font-medium shadow-sm hover:bg-yellow-600 transition cursor-pointer"
                     >
-                        <Pencil className="w-5 h-5" /> Edit Profile
+                        <Pencil className="w-5 h-5"/> Edit Profile
                     </button>
                     <button
                         onClick={() => setIsResetPasswordModalOpen(true)}
                         className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition cursor-pointer"
                     >
-                        <KeyRound className="w-5 h-5" /> Reset Password
+                        <KeyRound className="w-5 h-5"/> Reset Password
                     </button>
                     <button
                         onClick={() => handleLogout()}
                         className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-red-500 text-white font-medium shadow-sm hover:bg-red-600 transition cursor-pointer"
                     >
-                        <LogOut className="w-5 h-5" /> Logout
+                        <LogOut className="w-5 h-5"/> Logout
                     </button>
                 </div>
             </div>
@@ -230,9 +257,9 @@ export default function AccountComponent() {
                     className="space-y-5"
                 >
                     {[
-                        { name: "current_password", label: "Current Password" },
-                        { name: "new_password", label: "New Password" },
-                        { name: "confirm_new_password", label: "Confirm New Password" },
+                        {name: "current_password", label: "Current Password"},
+                        {name: "new_password", label: "New Password"},
+                        {name: "confirm_new_password", label: "Confirm New Password"},
                     ].map((field) => (
                         <div key={field.name}>
                             <label className="block text-sm font-medium text-gray-600 mb-1">

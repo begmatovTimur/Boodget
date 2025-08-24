@@ -20,7 +20,7 @@ export const apiRequest = async (endpoint, method = 'GET', body = null, token = 
 
     if (response.status === 401 && refreshToken) {
         // Try to refresh access token
-        const refreshRes = await fetch(`${BASE_URL}/auth/token/refresh/`, {
+        const refreshRes = await fetch(`${BASE_URL}auth/token/refresh/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ refresh: refreshToken }),
@@ -45,8 +45,17 @@ export const apiRequest = async (endpoint, method = 'GET', body = null, token = 
     if (contentType && contentType.includes('application/json')) {
         data = await response.json();
     }
+    console.log(response)
+    console.log(data)
 
-    if (!response.ok) throw new Error(data?.message || "API error");
+    if (!response.ok) {
+        throw {
+            status: response.status,
+            message: data?.message
+        };
+    }
+
+
 
     return data;
 };

@@ -53,13 +53,7 @@ const TransactionsComponent = () => {
     }, [activeTab, selectedCategory, selectedSource, selectedDate, sortOrder]);
 
 
-    const handleError = () => {
-        localStorage.removeItem("access");
-        localStorage.removeItem("refresh");
-        localStorage.setItem("status", "authFail");
-        router.push("/")
-        window.dispatchEvent(new Event("statusChanged"));
-    }
+
 
     const handleClearFilters = () => {
         setSelectedDate(null)
@@ -84,8 +78,12 @@ const TransactionsComponent = () => {
         apiRequest(`transactions/incomes/filter`, "POST", filterData).then((response) => {
             console.log(response.data);
             setFilteredData(response.data);
-        }).catch((error) => {
-            toast.error("Server error");
+        }).catch((err) => {
+            if (err.status === 400) {
+                toast.error("API error");
+            } else if (err.status === 401) {
+                handleError()
+            }
         })
     }
 
@@ -104,8 +102,12 @@ const TransactionsComponent = () => {
         apiRequest(`transactions/expenses/filter`, "POST", filterData).then((response) => {
             console.log(response.data);
             setFilteredData(response.data);
-        }).catch((error) => {
-            toast.error("Server error");
+        }).catch((err) => {
+            if (err.status === 400) {
+                toast.error("API error");
+            } else if (err.status === 401) {
+                handleError()
+            }
         });
     }
 
@@ -113,8 +115,12 @@ const TransactionsComponent = () => {
         apiRequest("transactions/income-sources", "GET").then(res => {
             console.log(res);
             setFilteredClassificationData(res);
-        }).catch((error) => {
-            toast.error("Server error");
+        }).catch((err) => {
+            if (err.status === 400) {
+                toast.error("API error");
+            } else if (err.status === 401) {
+                handleError()
+            }
         })
     }
 
@@ -122,8 +128,12 @@ const TransactionsComponent = () => {
         apiRequest("transactions/expense-categories", "GET").then(res => {
             console.log(res);
             setFilteredClassificationData(res);
-        }).catch((error) => {
-            toast.error("Server error");
+        }).catch((err) => {
+            if (err.status === 400) {
+                toast.error("API error");
+            } else if (err.status === 401) {
+                handleError()
+            }
         })
     }
 
@@ -141,15 +151,23 @@ const TransactionsComponent = () => {
                 console.log(response);
                 getExpenseData()
                 toast.success("Expense has been deleted successfully!");
-            }).catch((error) => {
-                toast.error("Server error");
+            }).catch((err) => {
+                if (err.status === 400) {
+                    toast.error("API error");
+                } else if (err.status === 401) {
+                    handleError()
+                }
             });
         } else if (activeTab === "income") {
             apiRequest(`transactions/incomes/${item}/`, "DELETE").then((response) => {
                 getIncomeData()
                 toast.success("Income has been deleted successfully!");
-            }).catch((error) => {
-                toast.error("Server error");
+            }).catch((err) => {
+                if (err.status === 400) {
+                    toast.error("API error");
+                } else if (err.status === 401) {
+                    handleError()
+                }
             });
         }
     }
@@ -166,15 +184,25 @@ const TransactionsComponent = () => {
             apiRequest(`transactions/incomes/`, "POST", formData).then((response) => {
                 toast.success("Income has been added successfully!");
                 getIncomeData()
-            }).catch((error) => {
-                toast.error("Server error");
+                window.dispatchEvent(new Event("transaction_made"));
+            }).catch((err) => {
+                if (err.status === 400) {
+                    toast.error("API error");
+                } else if (err.status === 401) {
+                    handleError()
+                }
             })
         } else {
             apiRequest(`transactions/expenses/`, "POST", formData).then((response) => {
                 toast.success("Expense has been added successfully!");
                 getExpenseData()
-            }).catch((error) => {
-                toast.error("Server error");
+                window.dispatchEvent(new Event("transaction_made"));
+            }).catch((err) => {
+                if (err.status === 400) {
+                    toast.error("API error");
+                } else if (err.status === 401) {
+                    handleError()
+                }
             })
         }
     };
@@ -219,6 +247,17 @@ const TransactionsComponent = () => {
         setOpen(false)
         setShowClassificationComponent((prev) => !prev)
     };
+
+    const handleError = () => {
+        toast.error("Unauthorized");
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        localStorage.setItem("status", "authFail");
+        router.push("/")
+        window.dispatchEvent(new Event("statusChanged"));
+    }
+
+
 
     return (
         <div className="min-h-screen bg-white p-6">
