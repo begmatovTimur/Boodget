@@ -188,7 +188,7 @@ export default function ReportDashboardComponent() {
                             <ResponsiveContainer width="100%" height={250}>
                                 <BarChart
                                     data={barData}
-                                    margin={{ bottom: 40 }} // add space for icons
+                                    margin={{ top: 20, right: 20, left: 50, bottom: 40 }} // added left margin
                                 >
                                     <XAxis
                                         dataKey="name"
@@ -226,6 +226,7 @@ export default function ReportDashboardComponent() {
                                     />
                                 </BarChart>
                             </ResponsiveContainer>
+
 
 
 
