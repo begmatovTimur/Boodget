@@ -10,16 +10,16 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Income Sources
         income_sources = [
-            {"name": "Salary", "icon": "briefcase-business"},
-            {"name": "Freelancing", "icon": "laptop"},
-            {"name": "Gift", "icon": "gift"},
-            {"name": "Investments/Dividends", "icon": "chart-line"},
-            {"name": "Other", "icon": "circle-pound-sterling"},
-            {"name": "Bank Interest", "icon": "university"},
-            {"name": "Business Revenue", "icon": "store"},
-            {"name": "Scholarship/Stipend", "icon": "graduation-cap"},
-            {"name": "Rental Income", "icon": "building"},
-            {"name": "Family Support", "icon": "users"},
+            {"name": "Salary", "icon": "BriefcaseBusiness"},
+            {"name": "Freelancing", "icon": "Laptop"},
+            {"name": "Gift", "icon": "Gift"},
+            {"name": "Investments/Dividends", "icon": "LineChart"},
+            {"name": "Other", "icon": "CirclePoundSterling"},
+            {"name": "Bank Interest", "icon": "University"},
+            {"name": "Business Revenue", "icon": "Store"},
+            {"name": "Scholarship/Stipend", "icon": "GraduationCap"},
+            {"name": "Rental Income", "icon": "Building"},
+            {"name": "Family Support", "icon": "Users"},
         ]
 
         for item in income_sources:
@@ -29,26 +29,26 @@ class Command(BaseCommand):
 
         # Expense Categories
         expense_categories = [
-            {"name": "Food & Drinks", "icon": "utensils"},
-            {"name": "Transport", "icon": "car"},
-            {"name": "Rent & Utilities", "icon": "house-plug"},
-            {"name": "Subscriptions", "icon": "tv"},
-            {"name": "Entertainment", "icon": "gamepad-2"},
-            {"name": "Shopping", "icon": "shopping-cart"},
-            {"name": "Healthcare", "icon": "heart-pulse"},
-            {"name": "Education", "icon": "school"},
-            {"name": "Travel", "icon": "plane"},
-            {"name": "Donation/Zakat", "icon": "hand-heart"},
-            {"name": "Repairs", "icon": "wrench"},
-            {"name": "Books & Courses", "icon": "book-open"},
-            {"name": "Family/Kids", "icon": "baby"},
-            {"name": "Pets", "icon": "paw-print"},
-            {"name": "Personal Care", "icon": "book-heart"},
-            {"name": "Hobbies", "icon": "camera"},
-            {"name": "Miscellaneous", "icon": "dices"},
-            {"name": "Moving/Relocation", "icon": "truck"},
-            {"name": "Tools/Equipment", "icon": "tool-case"},
-            {"name": "Debt Repayment", "icon": "piggy-bank"},
+            {"name": "Food & Drinks", "icon": "Utensils"},
+            {"name": "Transport", "icon": "Car"},
+            {"name": "Rent & Utilities", "icon": "HousePlug"},
+            {"name": "Subscriptions", "icon": "Tv"},
+            {"name": "Entertainment", "icon": "Gamepad2"},
+            {"name": "Shopping", "icon": "ShoppingCart"},
+            {"name": "Healthcare", "icon": "HeartPulse"},
+            {"name": "Education", "icon": "School"},
+            {"name": "Travel", "icon": "Plane"},
+            {"name": "Donation/Zakat", "icon": "HandHeart"},
+            {"name": "Repairs", "icon": "Wrench"},
+            {"name": "Books & Courses", "icon": "BookOpen"},
+            {"name": "Family/Kids", "icon": "Baby"},
+            {"name": "Pets", "icon": "PawPrint"},
+            {"name": "Personal Care", "icon": "BookHeart"},
+            {"name": "Hobbies", "icon": "Camera"},
+            {"name": "Miscellaneous", "icon": "Dices"},
+            {"name": "Moving/Relocation", "icon": "Truck"},
+            {"name": "Tools/Equipment", "icon": "ToolCase"},
+            {"name": "Debt Repayment", "icon": "PiggyBank"},
         ]
 
         for item in expense_categories:

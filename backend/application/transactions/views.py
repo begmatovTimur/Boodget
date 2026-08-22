@@ -30,20 +30,40 @@ class TransactionsReport(APIView):
         expenses = []
 
         if report_range == 'today':
-            incomes = Income.objects.filter(account__user=user, created_at=today)
-            expenses = Expense.objects.filter(account__user=user, created_at=today)
+            incomes = (Income.objects
+                       .filter(account__user=user, created_at=today)
+                       .annotate(total_amount=Sum("amount"))
+                       )
+
+            expenses = (Expense.objects
+                        .filter(account__user=user, created_at=today)
+                        .annotate(total_amount=Sum("amount"))
+                        )
         elif report_range == 'week':
             start_of_week = today - timedelta(days=today.weekday())
             end_of_week = today + timedelta(days=(6 - today.weekday()))
 
-            incomes = Income.objects.filter(account__user=user, created_at__range=(start_of_week, end_of_week))
-            expenses = Expense.objects.filter(account__user=user, created_at__range=(start_of_week, end_of_week))
+            incomes = (Income.objects
+                       .filter(account__user=user, created_at__range=(start_of_week, end_of_week))
+                       .annotate(total_amount=Sum("amount"))
+                       )
+
+            expenses = (Expense.objects
+                        .filter(account__user=user, created_at__range=(start_of_week, end_of_week))
+                        .annotate(total_amount=Sum("amount"))
+                        )
         elif report_range == 'month':
             start_of_month = today.replace(day=1)
             end_of_month = (start_of_month + relativedelta(months=1)) - relativedelta(days=1)
 
-            incomes = Income.objects.filter(account__user=user, created_at__range=(start_of_month, end_of_month))
-            expenses = Expense.objects.filter(account__user=user, created_at__range=(start_of_month, end_of_month))
+            incomes = (Income.objects
+                       .filter(account__user=user, created_at__range=(start_of_month, end_of_month))
+                       .annotate(total_amount=Sum("amount"))
+                       )
+            expenses = (Expense.objects
+                        .filter(account__user=user, created_at__range=(start_of_month, end_of_month))
+                        .annotate(total_amount=Sum("amount"))
+                        )
 
         income_data = IncomeSerializer(incomes, many=True).data
         expense_data = ExpenseSerializer(expenses, many=True).data

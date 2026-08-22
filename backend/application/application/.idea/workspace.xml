@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6394980f-b365-4e3d-b68b-02409206faf4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../.env" beforeDir="false" afterPath="$PROJECT_DIR$/../.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transactions/management/commands/seed_defaults.py" beforeDir="false" afterPath="$PROJECT_DIR$/../transactions/management/commands/seed_defaults.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/components/LandingPageComponent.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/components/LandingPageComponent.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/components/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/components/Navbar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/components/RegisterComponent.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/components/RegisterComponent.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/components/ReportDashboardComponent.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/components/ReportDashboardComponent.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/components/TransactionsComponent.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/components/TransactionsComponent.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/lib/TransactionForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/lib/TransactionForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/lib/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../../frontend/boodget-frontend/src/app/lib/api.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="3IALddjm5NQepZvyRXHnTg3XOD5" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "D:/Programming/projects/Boodget/backend/application/application"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-e0ed3721d81e-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.25410.159" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6394980f-b365-4e3d-b68b-02409206faf4" name="Changes" comment="" />
+      <created>1787202514777</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1787202514777</updated>
+    </task>
+    <servers />
+  </component>
+</project>

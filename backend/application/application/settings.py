@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 
 import dj_database_url
-import psycopg2
+# import psycopg2
 from django.contrib.auth import user_logged_in
 from dotenv import load_dotenv
 
@@ -95,9 +95,18 @@ DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=False
     )
 }
+
+# DATABASES = {
+#     "default": dj_database_url.parse(
+#         os.getenv("DATABASE_URL"),
+#         conn_max_age=600,
+#         ssl_require=False,
+#     )
+# }
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -153,6 +162,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://26.162.208.170:3000",
     "http://192.168.1.11:3000",
     "https://boodget-git-master-timurs-projects-019ed8cc.vercel.app",
     "https://boodget-d4fkvkjr5-timurs-projects-019ed8cc.vercel.app",
