@@ -27,6 +27,8 @@ export default function ReportDashboardComponent() {
 
     const {router} = useRouter();
 
+
+
     useEffect(() => {
         setIsLoading(true)
         if (!range || !selectedType) return;
@@ -63,6 +65,7 @@ export default function ReportDashboardComponent() {
 
                 console.log(data.incomes)
                 if (selectedType === "income") {
+                    console.log(incomeChartData)
                     setBarData(incomeChartData);
                 } else if (selectedType === "expense") {
                     setBarData(expenseChartData);
@@ -80,9 +83,11 @@ export default function ReportDashboardComponent() {
                 setTotalExpense(totalExpenseData)
             })
             .catch((err) => {
+                alert(err.status)
                 if (err.status === 400) {
                     toast.error("API error");
                 } else if (err.status === 401) {
+                    alert("hee")
                     handleError()
                 }
 
@@ -211,6 +216,7 @@ export default function ReportDashboardComponent() {
                                     <YAxis />
                                     <Bar dataKey="uv" fill="#8884d8" barSize={30} />
                                     <Tooltip
+                                        shared={false}
                                         cursor={{ fill: "rgba(0,0,0,0.1)" }}
                                         content={({ active, payload }) => {
                                             if (active && payload && payload.length) {

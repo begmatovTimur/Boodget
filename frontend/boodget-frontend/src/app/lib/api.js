@@ -1,5 +1,5 @@
-const BASE_URL = 'https://boodget.onrender.com/';
-// const BASE_URL = 'http://127.0.0.1:8000';
+// const BASE_URL = 'https://boodget.onrender.com/';
+const BASE_URL = 'http://127.0.0.1:8000/';
 
 export const apiRequest = async (endpoint, method = 'GET', body = null, token = null) => {
     let accessToken = token || localStorage.getItem('access');
@@ -34,9 +34,10 @@ export const apiRequest = async (endpoint, method = 'GET', body = null, token = 
 
             // Retry original request
             response = await fetch(`${BASE_URL}${endpoint}`, config);
-        } else {
-            throw new Error('Refresh token expired. Please log in again.');
         }
+        // else {
+        //     throw new Error('Refresh token expired. Please log in again.');
+        // }
     }
 
     let data = null;

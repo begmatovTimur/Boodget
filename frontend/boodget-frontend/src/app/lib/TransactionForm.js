@@ -35,6 +35,8 @@ const TransactionForm = ({ activeTab, onClose, onSubmit, classification = [], ed
         };
 
         // If editingItem exists, include its ID for the PUT
+        console.log(editingItem);
+        console.log(data);
         if (editingItem?.id) data.id = editingItem.id;
 
         onSubmit(data);
@@ -44,6 +46,7 @@ const TransactionForm = ({ activeTab, onClose, onSubmit, classification = [], ed
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-xl border border-gray-100">
+                {/* Title */}
                 {/* Title */}
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
                     {editingItem?.id ? "Edit" : "Add"}{" "}

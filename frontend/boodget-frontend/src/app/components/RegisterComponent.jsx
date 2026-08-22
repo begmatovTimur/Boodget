@@ -44,7 +44,7 @@ const RegisterComponent = () => {
                     window.dispatchEvent(new Event("statusChanged"));
                     router.push("/")
                 }).catch(err => {
-                    console.log(e)
+                    console.log(err)
                     if (err.message === "USER_EXISTS"){
                         toast.error("User Already Exists");
                     } else {

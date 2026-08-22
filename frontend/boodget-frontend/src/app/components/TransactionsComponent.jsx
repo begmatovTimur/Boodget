@@ -182,6 +182,7 @@ const TransactionsComponent = () => {
     const handleTransactionSubmit = async (formData) => {
         if (activeTab === "income") {
             apiRequest(`transactions/incomes/`, "POST", formData).then((response) => {
+                setEditingItemForm(null)
                 toast.success("Income has been added successfully!");
                 getIncomeData()
                 window.dispatchEvent(new Event("transaction_made"));
@@ -194,6 +195,7 @@ const TransactionsComponent = () => {
             })
         } else {
             apiRequest(`transactions/expenses/`, "POST", formData).then((response) => {
+                setEditingItemForm(null)
                 toast.success("Expense has been added successfully!");
                 getExpenseData()
                 window.dispatchEvent(new Event("transaction_made"));
@@ -205,6 +207,7 @@ const TransactionsComponent = () => {
                 }
             })
         }
+
     };
 
     const handleTransactionEditSubmit = async (formData) => {
@@ -213,6 +216,8 @@ const TransactionsComponent = () => {
                 ? `transactions/incomes/${formData.id}/`
                 : `transactions/expenses/${formData.id}/`;
 
+        alert("PUT HAS BEEN WORKED")
+        alert(JSON.stringify(editingItemForm))
         apiRequest(endpoint, "PUT", formData)
             .then((response) => {
                 toast.success("Transaction has been updated successfully!");
@@ -230,7 +235,7 @@ const TransactionsComponent = () => {
 
     const closeFormModal = () => {
         setShowForm(false)
-        setEditingItemForm({})
+        setEditingItemForm(null)
     }
 
     const handleTab = (tab) => {
@@ -443,7 +448,7 @@ const TransactionsComponent = () => {
                             </td>
                             <td className="px-4 py-2">${item.amount}</td>
                             <td className="px-4 py-2">{format(new Date(item.created_at), "EEEE • MMMM d, yyyy")}</td>
-                            <td className="px-4 py-2">{item.note}</td>
+                            <td className="px-4 py-2 break-all">{item.note}</td>
                             <td className="px-4 py-2">
                                 <div className="flex gap-2">
                                     <button
