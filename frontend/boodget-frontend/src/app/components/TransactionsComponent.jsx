@@ -216,8 +216,6 @@ const TransactionsComponent = () => {
                 ? `transactions/incomes/${formData.id}/`
                 : `transactions/expenses/${formData.id}/`;
 
-        alert("PUT HAS BEEN WORKED")
-        alert(JSON.stringify(editingItemForm))
         apiRequest(endpoint, "PUT", formData)
             .then((response) => {
                 toast.success("Transaction has been updated successfully!");
