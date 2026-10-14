@@ -14,13 +14,20 @@ const TransactionForm = ({ activeTab, onClose, onSubmit, classification = [], ed
                     ? editingItem.source?.id || ""
                     : editingItem.category_details?.id || editingItem.category || ""
             );
-            console.log("asd")
         } else {
             setAmount("");
             setNote("");
             setSelectValue("");
         }
-    }, [editingItem?.id, activeTab]);
+    }, [
+        activeTab,
+        editingItem?.id,
+        editingItem?.amount,
+        editingItem?.note,
+        editingItem?.source?.id,
+        editingItem?.category_details?.id,
+        editingItem?.category,
+    ]);
 
 
     const handleSubmit = (e) => {
@@ -35,8 +42,6 @@ const TransactionForm = ({ activeTab, onClose, onSubmit, classification = [], ed
         };
 
         // If editingItem exists, include its ID for the PUT
-        console.log(editingItem);
-        console.log(data);
         if (editingItem?.id) data.id = editingItem.id;
 
         onSubmit(data);

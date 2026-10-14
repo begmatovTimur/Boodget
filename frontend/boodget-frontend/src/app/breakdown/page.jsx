@@ -1,5 +1,6 @@
 import React from 'react';
 import BreakdownComponent from "@/app/components/BreakdownComponent";
+import ProtectedRoute from "@/app/components/ProtectedRoute";
 
 export const metadata = {
     title: "Breakdown",
@@ -8,7 +9,7 @@ export const metadata = {
 
 
 const Page = () => {
-    return <BreakdownComponent/>
+    return <ProtectedRoute><BreakdownComponent/></ProtectedRoute>
 };
 
 export default Page;

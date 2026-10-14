@@ -2,18 +2,12 @@ import {useState, useEffect} from "react";
 import {PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, CartesianGrid} from "recharts";
 import {cn} from "@/app/lib/utils";
 import {apiRequest} from "@/app/lib/api";
-import {router} from "next/client";
 import {useRouter} from "next/navigation";
-import LoaderComponent from "@/app/components/LoaderComponent";
 import DynamicLucideIcon from "@/app/lib/DynamicLucideIcon";
 import {toast} from "react-toastify"; // your classnames merging function if any
 
 const RANGE_OPTIONS = ["today", "week", "month"];
 const COLORS = ["#00c49f", "#ff8042"];
-const FINANCE_COLORS = {
-    income: "#00c49f",
-    expense: "#ff8042",
-};
 const STATUS = "userMeta"
 
 export default function ReportDashboardComponent() {
@@ -23,29 +17,22 @@ export default function ReportDashboardComponent() {
     const [barData, setBarData] = useState([]);
     const [totalIncome, setTotalIncome] = useState(0);
     const [totalExpense, setTotalExpense] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const {router} = useRouter();
+    const router = useRouter();
 
 
 
     useEffect(() => {
-        setIsLoading(true)
         if (!range || !selectedType) return;
 
         apiRequest(`transactions/dash-report/?range=${range}`, "GET")
             .then((response) => {
-                console.log(response)
                 const isSessionInvalid = localStorage.getItem("status") !== STATUS
                     || !localStorage.getItem('access')
                     || !localStorage.getItem('refresh')
                 if (isSessionInvalid) {
-                    localStorage.removeItem("access");
-                    localStorage.removeItem("refresh");
-                    window.dispatchEvent(new Event("statusChanged"));
+                    handleError();
                     return;
                 }
-                setIsLoading(false)
                 const data = response;
                 let totalIncomeData = 0
                 let totalExpenseData = 0
@@ -58,14 +45,11 @@ export default function ReportDashboardComponent() {
                     incomeChartData.push({"name": item?.source?.name, "uv": item?.amount,  "icon": item?.source?.icon});
                 });
                 data.expenses.forEach((item, index) => {
-                    console.log(item)
                     totalExpenseData += parseFloat(item?.amount);
                     expenseChartData.push({"name": item?.category_details?.name, "uv": item?.amount, "icon": item?.category_details?.icon});
                 });
 
-                console.log(data.incomes)
                 if (selectedType === "income") {
-                    console.log(incomeChartData)
                     setBarData(incomeChartData);
                 } else if (selectedType === "expense") {
                     setBarData(expenseChartData);
@@ -76,18 +60,13 @@ export default function ReportDashboardComponent() {
                     {name: "Expense", value: totalExpenseData || 0},
                 ]);
 
-                const key = `${selectedType}_sources`;
-
-
                 setTotalIncome(totalIncomeData)
                 setTotalExpense(totalExpenseData)
             })
             .catch((err) => {
-                alert(err.status)
                 if (err.status === 400) {
                     toast.error("API error");
                 } else if (err.status === 401) {
-                    alert("hee")
                     handleError()
                 }
 

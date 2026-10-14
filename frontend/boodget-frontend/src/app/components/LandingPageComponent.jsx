@@ -21,7 +21,6 @@ const LandingPageComponent = () => {
         const isSessionInvalid = localStorage.getItem("status") !== STATUS
             || !localStorage.getItem('access')
             || !localStorage.getItem('refresh')
-        console.log(isSessionInvalid)
         if (isSessionInvalid) {
             localStorage.removeItem("access");
             localStorage.removeItem("refresh");

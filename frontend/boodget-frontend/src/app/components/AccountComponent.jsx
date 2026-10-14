@@ -32,7 +32,6 @@ export default function AccountComponent() {
 
     const getProfileData = () => {
         apiRequest('auth/profile/', "GET").then(res => {
-            console.log(res);
             setUserData(res);
         }).catch(err => {
             if (err.status === 400) {
@@ -96,13 +95,11 @@ export default function AccountComponent() {
             setResetPasswordLoading(false)
             return;
         }
-        console.log(passwordResetFormData)
         apiRequest('auth/reset-password/', "PATCH", passwordResetFormData).then(res => {
             toast.success("Password updated Successfully!");
             closeResetPasswordModal()
             getProfileData()
         }).catch(err => {
-            console.log(err)
             if (err.status === 400) {
                 toast.error("Old password is incorrect!");
             } else if (err.status === 401) {

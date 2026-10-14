@@ -57,7 +57,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'application.urls'
@@ -81,9 +80,6 @@ WSGI_APPLICATION = 'application.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-# settings.py
-print(os.getenv('DATABASE_URL'))
 
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")  # Should be: postgres.ceslsmjtifwvzfghekwy

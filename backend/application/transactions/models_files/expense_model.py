@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from .account_model import Account
@@ -6,7 +9,11 @@ from .expense_category_model import ExpenseCategory
 
 class Expense(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.01"))],
+    )
     category = models.ForeignKey(ExpenseCategory, on_delete=models.SET_NULL, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     note = models.TextField(blank=True)

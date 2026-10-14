@@ -1,11 +1,11 @@
 from dateutil.relativedelta import relativedelta
-from django.db.models.functions import TruncMonth
+from django.db import transaction
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
 
-from django.db.models import Avg, Sum
+from django.db.models import Sum
 
 from datetime import date, timedelta, datetime
 
@@ -89,26 +89,28 @@ class CurrentUserData(APIView):
 class UserIncomeTransactions(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def post(self, request):
         serializer = IncomeSerializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
             serializer.save(account=request.user.account)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @transaction.atomic
     def delete(self, request, pk):
         try:
-            income = Income.objects.get(pk=pk)
+            income = Income.objects.select_for_update().get(pk=pk, account__user=request.user)
             income.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Income.DoesNotExist:
             return Response({'error': 'Income not found'}, status=status.HTTP_404_NOT_FOUND)
 
+    @transaction.atomic
     def put(self, request, pk):
         try:
-            income = Income.objects.get(pk=pk)
+            income = Income.objects.select_for_update().get(pk=pk, account__user=request.user)
         except Income.DoesNotExist:
             return Response({'error': 'Income not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -156,6 +158,7 @@ class UserIncomeFilterTransactions(APIView):
 class UserExpenseTransactions(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def post(self, request):
         serializer = ExpenseSerializer(data=request.data)
 
@@ -165,24 +168,25 @@ class UserExpenseTransactions(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @transaction.atomic
     def delete(self, request, pk):
         try:
-            expense = Expense.objects.get(pk=pk)
+            expense = Expense.objects.select_for_update().get(pk=pk, account__user=request.user)
             expense.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Expense.DoesNotExist:
             return Response({'error': 'Expense not found'}, status=status.HTTP_404_NOT_FOUND)
 
+    @transaction.atomic
     def put(self, request, pk):
         try:
-            expense = Expense.objects.get(pk=pk)
+            expense = Expense.objects.select_for_update().get(pk=pk, account__user=request.user)
         except Expense.DoesNotExist:
             return Response({'error': 'Expense not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        print(request.data)
         serializer = ExpenseSerializer(expense, data=request.data)
         if serializer.is_valid():
-            serializer.save(account=request.user.account)  # <-- important line
+            serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -248,12 +252,13 @@ class UserTransactionsBreakdown(APIView):
         if not x_month or not y_month:
             return Response({"error": "x_month and y_month are required."}, status=400)
 
-        # Convert to datetime objects
-        x_start = datetime.strptime(x_month, "%Y-%m")
-        x_end = x_start + relativedelta(months=1)
-
-        y_start = datetime.strptime(y_month, "%Y-%m")
-        y_end = y_start + relativedelta(months=1)
+        try:
+            x_start = datetime.strptime(x_month, "%Y-%m")
+            y_start = datetime.strptime(y_month, "%Y-%m")
+            x_end = x_start + relativedelta(months=1)
+            y_end = y_start + relativedelta(months=1)
+        except (TypeError, ValueError, OverflowError):
+            return Response({"error": "Months must be in format YYYY-MM."}, status=400)
 
         # Totals for x_month
         x_income_total = Income.objects.filter(
@@ -321,10 +326,12 @@ class UserIncomeTransactionTrends(APIView):
         data = request.data
         user = request.user
         month_str = data.get("month")  # e.g. "2025-08"
-        if not month_str or "-" not in month_str:
+        try:
+            parsed_month = datetime.strptime(month_str, "%Y-%m")
+        except (TypeError, ValueError):
             return Response({"error": "Month must be in format YYYY-MM"}, status=400)
 
-        year, month = map(int, month_str.split("-"))
+        year, month = parsed_month.year, parsed_month.month
 
         # Get incomes grouped by source
         incomes = (
@@ -362,10 +369,12 @@ class UserExpenseTransactionTrends(APIView):
         data = request.data
         user = request.user
         month_str = data.get("month")
-        if not month_str or "-" not in month_str:
+        try:
+            parsed_month = datetime.strptime(month_str, "%Y-%m")
+        except (TypeError, ValueError):
             return Response({"error": "Month must be in format YYYY-MM"}, status=400)
 
-        year, month = map(int, month_str.split("-"))
+        year, month = parsed_month.year, parsed_month.month
 
         # Group expenses by source
         expenses = (
