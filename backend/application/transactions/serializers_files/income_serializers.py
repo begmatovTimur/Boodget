@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from rest_framework import serializers
 
 from .. models import Income, IncomeSource
@@ -10,8 +12,9 @@ class IncomeSourceSerializer(serializers.ModelSerializer):
 
 
 class IncomeSerializer(serializers.ModelSerializer):
+    amount = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=Decimal("0.01"))
     created_at = serializers.DateField(format="%Y-%m-%d", read_only=True)
-    source = serializers.PrimaryKeyRelatedField(queryset=IncomeSource.objects.all())
+    source = serializers.PrimaryKeyRelatedField(queryset=IncomeSource.objects.filter(is_active=True))
 
     class Meta:
         model = Income

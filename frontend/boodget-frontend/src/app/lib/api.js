@@ -46,9 +46,6 @@ export const apiRequest = async (endpoint, method = 'GET', body = null, token = 
     if (contentType && contentType.includes('application/json')) {
         data = await response.json();
     }
-    console.log(response)
-    console.log(data)
-
     if (!response.ok) {
         throw {
             status: response.status,

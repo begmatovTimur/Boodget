@@ -1,5 +1,6 @@
 import React from 'react';
 import TransactionsComponent from "@/app/components/TransactionsComponent";
+import ProtectedRoute from "@/app/components/ProtectedRoute";
 
 export const metadata = {
     title: "Transactions",
@@ -8,7 +9,7 @@ export const metadata = {
 
 const Page = () => {
     return (
-        <TransactionsComponent/>
+        <ProtectedRoute><TransactionsComponent/></ProtectedRoute>
     );
 };
 

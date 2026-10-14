@@ -1,5 +1,6 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
+from django.db import transaction
 
 from .models import User
 from .serializers import UserWriteSerializer, ProfileSerializer, ChangePasswordSerializer
@@ -9,9 +10,10 @@ class RegisterUser(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserWriteSerializer
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
-        queryset = User.objects.filter(username=request.data['username'])
-        print(queryset)
+        username = request.data.get('username')
+        queryset = User.objects.filter(username=username) if username else User.objects.none()
         if not queryset.exists():
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -20,7 +22,6 @@ class RegisterUser(generics.CreateAPIView):
             return Response({'message': 'USER_EXISTS'}, status = status.HTTP_400_BAD_REQUEST)
 
         tokens = UserWriteSerializer.get_tokens(user)
-        print(tokens)
 
         return Response({
             'user': UserWriteSerializer(user).data,

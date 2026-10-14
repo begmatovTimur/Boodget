@@ -74,7 +74,6 @@ const TrendsComponent = () => {
         apiRequest(`transactions/trends/incomes`, "POST", filterData)
             .then((response) => {
                 setFilteredData(response);
-                console.log(response);
             })
             .catch((err) => {
                 if (err.status === 400) {
@@ -95,7 +94,6 @@ const TrendsComponent = () => {
 
         apiRequest(`transactions/trends/expenses`, "POST", filterData)
             .then((response) => {
-                console.log(response);
                 setFilteredData(response);
             }).catch((err) => {
                 if (err.status === 400) {

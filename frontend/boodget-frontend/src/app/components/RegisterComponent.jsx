@@ -34,7 +34,6 @@ const RegisterComponent = () => {
                 password,
                 role: 1
             };
-            console.log(firstName)
             setButtonLoading(true);
             if (userObject.password === passwordConfirm) {
                 await apiRequest("auth/register/", "POST", userObject).then(response => {
@@ -44,7 +43,6 @@ const RegisterComponent = () => {
                     window.dispatchEvent(new Event("statusChanged"));
                     router.push("/")
                 }).catch(err => {
-                    console.log(err)
                     if (err.message === "USER_EXISTS"){
                         toast.error("User Already Exists");
                     } else {

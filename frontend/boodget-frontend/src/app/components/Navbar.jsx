@@ -62,8 +62,6 @@ const Navbar = () => {
                 setIsLoading(false)
             })
             .catch((err) => {
-                console.log(err)
-                console.log("ERROR HAS BEEN OCCURED")
                 setUserData(null);
                 setIsLoading(false)
             });

@@ -59,7 +59,7 @@ const TransactionsComponent = () => {
         setSelectedDate(null)
         setSelectedCategory(null)
         setSelectedSource(null)
-        setSortOrder(true)
+        setSortOrder(null)
     }
 
     const getIncomeData = () => {
@@ -76,7 +76,6 @@ const TransactionsComponent = () => {
 
 
         apiRequest(`transactions/incomes/filter`, "POST", filterData).then((response) => {
-            console.log(response.data);
             setFilteredData(response.data);
         }).catch((err) => {
             if (err.status === 400) {
@@ -97,10 +96,7 @@ const TransactionsComponent = () => {
             filterData.category = selectedCategory.id;
         }
         filterData.order = sortOrder
-        console.log(filterData)
-
         apiRequest(`transactions/expenses/filter`, "POST", filterData).then((response) => {
-            console.log(response.data);
             setFilteredData(response.data);
         }).catch((err) => {
             if (err.status === 400) {
@@ -113,7 +109,6 @@ const TransactionsComponent = () => {
 
     const getIncomeSourceData = () => {
         apiRequest("transactions/income-sources", "GET").then(res => {
-            console.log(res);
             setFilteredClassificationData(res);
         }).catch((err) => {
             if (err.status === 400) {
@@ -126,7 +121,6 @@ const TransactionsComponent = () => {
 
     const getExpenseSourceData = () => {
         apiRequest("transactions/expense-categories", "GET").then(res => {
-            console.log(res);
             setFilteredClassificationData(res);
         }).catch((err) => {
             if (err.status === 400) {
@@ -148,7 +142,6 @@ const TransactionsComponent = () => {
     const handleDelete = (item) => {
         if (activeTab === "expense") {
             apiRequest(`transactions/expenses/${item}/`, "DELETE").then((response) => {
-                console.log(response);
                 getExpenseData()
                 toast.success("Expense has been deleted successfully!");
             }).catch((err) => {
@@ -364,7 +357,7 @@ const TransactionsComponent = () => {
                 </div>
 
 
-                {["desc", "asc", "newest", "latest"].map((order) => (
+                {["desc", "asc", "newest", "oldest"].map((order) => (
                     <button
                         key={order}
                         onClick={() => setSortOrder(order)}
@@ -388,7 +381,7 @@ const TransactionsComponent = () => {
                                 ? "Lowest"
                                 : order === "newest"
                                     ? "Newest"
-                                    : "Latest"}
+                                    : "Oldest"}
                     </button>
                 ))}
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import TrendsComponent from "@/app/components/TrendsComponent";
+import ProtectedRoute from "@/app/components/ProtectedRoute";
 
 export const metadata = {
     title: "Trends",
@@ -7,7 +8,7 @@ export const metadata = {
 };
 
 const Page = () => {
-    return <TrendsComponent/>;
+    return <ProtectedRoute><TrendsComponent/></ProtectedRoute>;
 };
 
 export default Page;
